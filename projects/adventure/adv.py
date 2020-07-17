@@ -28,8 +28,32 @@ player = Player(world.starting_room)
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
 traversal_path = []
+def dft(start, visited=None, prev_room=None, path=None):
 
+    if visited is None:
+        visited = list()
+    if path is None:
+        path = list()
 
+    if start.id not in visited:
+        visited.append(start.id)
+        direction_of_exits = start.get_exits()
+        next_rooms = []
+
+        for direction in direction_of_exits:
+            next_rooms.append(start.get_room_in_direction(direction))
+
+        for room in next_rooms:
+            if room is not prev_room and room.id not in visited:
+                path.append(direction_of_exits[next_rooms.index(room)])
+                dft(room, visited, start, path)
+
+    if prev_room is not None:
+        path.append(direction_of_exits[next_rooms.index(prev_room)])
+
+    return path
+
+traversal_path = dft(player.current_room)
 
 # TRAVERSAL TEST
 visited_rooms = set()
@@ -51,12 +75,12 @@ else:
 #######
 # UNCOMMENT TO WALK AROUND
 #######
-player.current_room.print_room_description(player)
-while True:
-    cmds = input("-> ").lower().split(" ")
-    if cmds[0] in ["n", "s", "e", "w"]:
-        player.travel(cmds[0], True)
-    elif cmds[0] == "q":
-        break
-    else:
-        print("I did not understand that command.")
+#player.current_room.print_room_description(player)
+#while True:
+#    cmds = input("-> ").lower().split(" ")
+#    if cmds[0] in ["n", "s", "e", "w"]:
+#        player.travel(cmds[0], True)
+#    elif cmds[0] == "q":
+#        break
+#    else:
+#        print("I did not understand that command.")
